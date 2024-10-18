@@ -1,28 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+{{#*inline "title"}}Product Details{{/inline}}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalles del producto</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-
-<body class="container">
-    <h1 class="title">Detalles del producto</h1>
-    <div class="box">
-        <div class="box-body">
-            <h5 class="card-title">{{title}}</h5>
-            <p class="form-text"><strong>Id:</strong> {{_id}}</p>
-            <p class="form-text"><strong>Description:</strong> {{description}}</p>
-            <p class="form-text"><strong>Code:</strong> {{code}}</p>
-            <p class="form-text"><strong>Price:</strong> ${{price}}</p>
-            <p class="form-text"><strong>Stock:</strong> {{stock}}</p>
-            <p class="form-text"><strong>Category:</strong> {{category}}</p>
-            <p class="form-text"><strong>Thumbnails:</strong> {{thumbnails}}</p>
+<div class="container mt-5">
+    <h1>Product Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{product.title}}</h5>
+            <p class="card-text">{{product.description}}</p>
+            <p class="card-text"><strong>Code:</strong> {{product.code}}</p>
+            <p class="card-text"><strong>Price:</strong> ${{product.price}}</p>
+            <p class="card-text"><strong>Stock:</strong> {{product.stock}}</p>
+            <p class="card-text"><strong>Category:</strong> {{product.category}}</p>
+            <p class="card-text"><strong>Thumbnails:</strong></p>
+            <ul>
+                {{#each product.thumbnails}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <button class="btn btn-success" onclick="addToCart('{{product._id}}')">Add to Cart</button>
+            <a href="/realtimeproducts" class="btn btn-secondary">Back to Products</a>
         </div>
     </div>
-    <a href="/" class="back">Volver a la lista de productos</a>
-</body>
-
-</html>
+</div>

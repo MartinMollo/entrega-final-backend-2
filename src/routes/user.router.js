@@ -1,67 +1,50 @@
-import { Router } from 'express';
-import userModel from '../models/user.model.js';
-import passport from "../config/passport.js";
+import { Router } from "express";
+import passport from "passport";
+import UserController from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-    try {
-        let users = await userModel.find();
-        res.send({ result: 'Success', payload: users });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ status: 'Error', error: 'Internal server error' });
-    }
-});
-
-router.post("/", async (req, res) => {
-    let { name, lastName, email, address } = req.body;
-    if (!name || !lastName || !email || !address) {
-        return res.status(400).send({ status: 'Error', error: 'Parameters missing' });
-    }
-
-    try {
-        let result = await userModel.create({ name, lastName, email, address });
-        res.send({ result: 'Success', payload: result });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ status: 'Error', error: 'Internal server error' });
-    }
-});
-
+// Ruta para obtener todos los usuarios
 router.get(
-  "/auth/profile",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    res.render("profile", { user: req.user });
-  }
+  UserController.getAllUsers
 );
 
-router.put("/:uid", async (req, res) => {
-    let { uid } = req.params;
-    let { name, lastName, email, address } = req.body;
-    if (!name || !lastName || !email || !address) {
-        return res.status(400).send({ status: 'Error', error: 'Parameters missing' });
-    }
+// Ruta para obtener un usuario por su ID
+router.get(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  UserController.getUserById
+);
 
-    try {
-        let result = await userModel.updateOne({ _id: uid }, { name, lastName, email, address });
-        res.send({ result: 'Success', payload: result });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ status: 'Error', error: 'Internal server error' });
-    }
-});
+// Ruta para actualizar un usuario por su ID
+router.put(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  UserController.updateUser
+);
 
-router.delete("/:uid", async (req, res) => {
-    let { uid } = req.params;
-    try {
-        let result = await userModel.deleteOne({ _id: uid });
-        res.send({ result: 'Success', payload: result });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ status: 'Error', error: 'Internal server error' });
-    }
-});
+// Ruta para eliminar un usuario por su ID
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  UserController.deleteUser
+);
+
+// Ruta para cambiar la contraseña de un usuario por su ID
+router.put(
+  "/:id/password",
+  passport.authenticate("jwt", { session: false }),
+  UserController.changeUserPassword
+);
+
+// Ruta para actualizar el rol de un usuario por su ID
+router.put(
+  "/:id/role",
+  passport.authenticate("jwt", { session: false }),
+  UserController.updateUserRole
+);
 
 export default router;
+

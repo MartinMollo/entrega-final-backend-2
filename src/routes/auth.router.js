@@ -1,77 +1,35 @@
 import { Router } from "express";
-import userModel from "../models/user.model.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
-dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET;
+import { loginUser, registerUser, sendResetPassword, resetPassword } from "../controllers/auth.controller.js";
+import { validateLogin, validateRegister } from "../validators/auth.validator.js";
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
-  const { first_name, last_name, email, age, password, } = req.body;
-
-  try {
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const newUser = new userModel({
-      first_name,
-      last_name,
-      email,
-      age,
-      password: hashedPassword,
-      
-    });
-    await newUser.save();
-
-    const token = jwt.sign(
-      { id: newUser._id, role: newUser.role },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.cookie("jwt", token, { httpOnly: true, secure: false });
-
-    res.redirect("/auth/profile");
-  } catch (error) {
-    res.status(500).send("Redirecting");
-  }
+// Ruta para mostrar la vista de login y manejar la variable de éxito
+router.get("/login", (req, res) => {
+  const passwordResetSuccess = req.query.passwordResetSuccess === 'true';
+  res.render("login", { passwordResetSuccess });
 });
 
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+// Rutas de login y registro
+router.post("/login", validateLogin, loginUser);
+router.post("/register", validateRegister, registerUser);
 
-  try {
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: "la contraseña o el email son invalidos" });
-    }
-
-    const isMatch = bcrypt.compareSync(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "la contraseña o el email son invalidos" });
-    }
-
-    // Generamos el token JWT
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    // Guardamos el token en las cookies
-    res.cookie("jwt", token, { httpOnly: true, secure: false });
-
-    // Redirigir a la página de perfil
-    res.redirect("/auth/profile");
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+// Ruta para mostrar la vista de selección de método de recuperación
+router.get("/reset-password", (req, res) => {
+  res.render("requestResetPassword");
 });
 
-router.get("/logout", (req, res) => {
-  res.clearCookie("jwt");
-  res.redirect("/auth/login");
+// Ruta para procesar la solicitud de recuperación
+router.post("/reset-password", sendResetPassword);
+
+// Ruta para mostrar la vista de restablecimiento de contraseña con el token
+router.get("/reset-password/:token", (req, res) => {
+  res.render("resetPassword", { token: req.params.token });
 });
+
+// Ruta para restablecer la contraseña
+router.post("/reset-password/:token", resetPassword);
 
 export default router;
+
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración de Productos</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+  {{> navbar }}
+
+  <div class="container mt-5">
+    <h1>Administración de Productos</h1>
+    
+    <form id="productForm" class="mb-4">
+      <input type="hidden" id="productId" name="productId" value="">
+      <div class="form-group">
+        <label for="title">Título del producto</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="code">Código</label>
+        <input type="text" class="form-control" id="code" name="code" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Precio</label>
+        <input type="number" class="form-control" id="price" name="price" required>
+      </div>
+      <div class="form-group">
+        <label for="stock">Stock</label>
+        <input type="number" class="form-control" id="stock" name="stock" required>
+      </div>
+      <div class="form-group">
+        <label for="category">Categoría</label>
+        <input type="text" class="form-control" id="category" name="category">
+      </div>
+      <button type="submit" class="btn btn-primary">Guardar Producto</button>
+    </form>
+
+    <h2>Lista de Productos</h2>
+    <table class="table table-striped" id="productsTable">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Código</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <td>{{this.title}}</td>
+          <td>{{this.code}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.stock}}</td>
+          <td>
+            <button class="btn btn-info btn-sm editProduct" data-id="{{this._id}}">Editar</button>
+            <button class="btn btn-danger btn-sm deleteProduct" data-id="{{this._id}}">Eliminar</button>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="/js/adminCrud.js"></script>
+</body>
+</html>

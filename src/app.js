@@ -1,66 +1,73 @@
-import express, { json, urlencoded } from 'express';
-import db from "./config/database.js";
-import configureProductsRouter from './routes/products.router.js';
-import configureCartsRouter from './routes/carts.router.js';
-import { engine } from "express-handlebars";
-import path from 'path';
-import { Server } from 'socket.io';
-import http from 'http';
-import viewsRouter from './routes/views.router.js';
-import userRouter from './routes/user.router.js';
-import authRouter from "./routes/auth.router.js";
-import passport from "./config/passport.js";
+import express from "express";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv-flow";
+import passport from "./config/passport.js";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
-import dotenv from 'dotenv';
+import connectDB from "./config/database.js";
+import cors from "cors";
+import hbs from "hbs";
+
+
+import authRouter from "./routes/auth.router.js";
+import viewsRouter from "./routes/views.router.js";
+import cartsRouter from "./routes/carts.router.js";
+import productsRouter from "./routes/products.router.js";
 
 dotenv.config();
 
+const app = express();
+const PORT = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const app = express();
-const PORT = process.env.PORT || 8080;
+connectDB();
 
-app.engine(
-  "hbs",
-  engine({
-    extname: ".hbs",
-    defaultLayout: "main",
-    runtimeOptions: {
-      allowProtoPropertiesByDefault: true,
-      allowProtoMethodsByDefault: true,
-    },
+// Determinar entorno
+const isProduction = process.env.NODE_ENV === "production";
+
+// Configuración CORS
+app.use(
+  cors({
+    origin: isProduction ? "http://localhost:3030" : "http://localhost:8080",
+    credentials: true,
   })
 );
-app.set("view engine", "hbs");
-app.set("views", "./src/views");
 
-// Middlewares 
-app.use(json());
-app.use(urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+// Middlewares
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(passport.initialize());
 
+// Middleware
+app.use((req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (user) {
+      req.user = user;
+      res.locals.user = user;
+    } else {
+      res.locals.user = null;
+    }
+    next();
+  })(req, res, next);
+});
 
+//vistas
+app.set("view engine", "hbs");
+app.set("views", path.join(__dirname, "views"));
+hbs.registerPartials(path.join(__dirname, "views", "partials"));
 
-// HTTP
-const httpServer = http.createServer(app);
-
-// Socket.IO
-const io = new Server(httpServer);
-
-
-// Routers
-app.use("/api/carts", configureCartsRouter(io));
-app.use("/api/products", configureProductsRouter(io));
-app.use("/api/users", userRouter);
-app.use("/", viewsRouter);
+// rutas
 app.use("/auth", authRouter);
+app.use("/", viewsRouter);
+app.use("/api/carts", cartsRouter);
+app.use("/api/products", productsRouter);
 
-
-httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Iniciar servidor
+app.listen(PORT, () => {
+  console.log(`Servidor abierto en el puerto ${PORT}`);
 });

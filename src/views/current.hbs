@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    {{> navbar }}
+
+    <div class="container mt-5">
+        <h1>Perfil de Usuario</h1>
+
+        <p><strong>Nombre:</strong> {{user.first_name}}</p>
+        <p><strong>Apellido:</strong> {{user.last_name}}</p>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        <p><strong>Edad:</strong> {{user.age}}</p>
+
+        <a href="/auth/logout" class="btn btn-danger">Cerrar sesión</a>
+    </div>
+
+    <script src="/js/index.js"></script>
+</body>
+</html>
