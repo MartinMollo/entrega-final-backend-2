@@ -1,4 +1,47 @@
 # entrega final
+
+RUTAS
+
+-Registrarse:                 /auth/register
+
+-Login:                       /auth/login
+
+-Compra:                      /api/carts/purchase
+
+-Recuperar contraseña:        /auth/reset-password
+
+-Restablecer contraseña:      /auth/reset-password/:token
+
+-Real time products(Usuario): /realtimeproducts
+
+-Real time products(Admin):   /admin/products
+
+USUARIOS
+
+-Agregar Producto:  POST /api/carts/add/:productId
+
+-Remover producto:  POST /api/carts/remove/:productId
+
+-Limpiar Carrito:   POST /api/carts/clear
+
+-Comprar Carrito:   POST /api/carts/purchase
+
+
+ADMINISTRADORES
+
+-Ver Productos:          GET /api/products
+
+-Ver Productos por ID:   GET /api/products/:id
+
+-Crear Producto:         POST /api/products
+
+-Cambiar Producto:       PUT /api/products/:id
+
+-Borrar producto:        DELETE /api/products/:id
+
+
+
+
 pre_entrega_1
 
 localhost:8080
@@ -33,32 +76,3 @@ CARTS
 -DEL
 --localhost:8080/api/carts/3/product/2
 ![del_carts](https://github.com/user-attachments/assets/fc5f109e-359a-4f38-82cc-03fb32ec2fc9)
-
-RUTAS
-
--Registrarse:                 /auth/register
-
--Login:                       /auth/login
-
--Compra:                      /api/carts/purchase
-
--Recuperar contraseña:        /auth/reset-password
-
--Restablecer contraseña:      /auth/reset-password/:token
-
--Real time products(Usuario): /realtimeproducts
-
--Real time products(Admin):   /admin/products
-
-USUARIOS
--Agregar Producto:  POST /api/carts/add/:productId
--Remover producto:  POST /api/carts/remove/:productId
--Limpiar Carrito:   POST /api/carts/clear
--Comprar Carrito:   POST /api/carts/purchase
-
-ADMINISTRADORES
--Ver Productos:          GET /api/products
--Ver Productos por ID:   GET /api/products/:id
--Crear Producto:         POST /api/products
--Cambiar Producto:       PUT /api/products/:id
--Borrar producto:        DELETE /api/products/:id
