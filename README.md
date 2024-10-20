@@ -1,5 +1,7 @@
 # entrega final
 
+localhost:8080
+
 RUTAS
 
 -Registrarse:                 /auth/register
@@ -40,11 +42,9 @@ ADMINISTRADORES
 -Borrar producto:        DELETE /api/products/:id
 
 
-
+--------------------------------------------------------------------------------------------------
 
 pre_entrega_1
-
-localhost:8080
 
 PRODUCTS
 -GET
