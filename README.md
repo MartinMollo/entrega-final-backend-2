@@ -35,12 +35,19 @@ CARTS
 ![del_carts](https://github.com/user-attachments/assets/fc5f109e-359a-4f38-82cc-03fb32ec2fc9)
 
 RUTAS
+
 -Registrarse:                 /auth/register
+
 -Login:                       /auth/login
+
 -Compra:                      /api/carts/purchase
+
 -Recuperar contraseña:        /auth/reset-password
+
 -Restablecer contraseña:      /auth/reset-password/:token
+
 -Real time products(Usuario): /realtimeproducts
+
 -Real time products(Admin):   /admin/products
 
 USUARIOS
